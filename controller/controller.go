@@ -14,3 +14,8 @@ func Students(w http.ResponseWriter, r *http.Request) {
 
 	temp.ExecuteTemplate(w, "StudentsList", students)
 }
+
+func Index(w http.ResponseWriter, r *http.Request) {
+
+	temp.ExecuteTemplate(w, "Index", nil)
+}
