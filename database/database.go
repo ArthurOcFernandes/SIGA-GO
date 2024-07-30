@@ -32,3 +32,19 @@ func Connection() *sql.DB {
 
 	return db
 }
+
+func SelectAllUserJoinAddress(userType string) *sql.Rows {
+	db := Connection()
+
+	connectionString := fmt.Sprintf(`SELECT * FROM %s inner join addresses using (id_address)`, userType)
+
+	rows, err := db.Query(connectionString)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer db.Close()
+
+	return rows
+}
