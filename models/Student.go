@@ -1,7 +1,6 @@
 package models
 
 import (
-	"log"
 	"siga/database"
 )
 
@@ -17,35 +16,25 @@ type Student struct {
 func (s Student) Name() string {
 	return s.name
 }
-
 func (s Student) StudentRegistry() string {
 	return s.studentRegistry
 }
-
 func (s Student) SocialSecurityNumber() string {
 	return s.socialSecurityNumber
 }
-
 func (s Student) Email() string {
 	return s.email
 }
-
 func (s Student) Address() Address {
 	return s.address
 }
-
 func ConstructStudent(name, registry, socialSecurityNumber, email string, address Address) *Student {
 	return &Student{name: name, studentRegistry: registry, socialSecurityNumber: socialSecurityNumber, email: email, address: address}
 }
 
 func SearchStudentFromDataBase() []Student {
-	db := database.Connection()
 
-	selectAll, err := db.Query("SELECT * FROM students inner join addresses using (id_address)")
-
-	if err != nil {
-		log.Fatal(err)
-	}
+	selectAll := database.SelectAllUserJoinAddress("students")
 
 	var students []Student
 
@@ -55,7 +44,7 @@ func SearchStudentFromDataBase() []Student {
 		var idAddress, number int
 		var street, postalCode, neighbourhood, city, state string
 
-		err = selectAll.Scan(&idAddress, &idStudent, &name, &socialSecurityNumber, &email, &studentRegistry, &street, &number, &postalCode, &neighbourhood, &city, &state)
+		err := selectAll.Scan(&idAddress, &idStudent, &name, &socialSecurityNumber, &email, &studentRegistry, &street, &number, &postalCode, &neighbourhood, &city, &state)
 
 		if err != nil {
 			panic(err.Error())
@@ -67,8 +56,5 @@ func SearchStudentFromDataBase() []Student {
 		students = append(students, *student)
 
 	}
-
-	defer db.Close()
-
 	return students
 }
